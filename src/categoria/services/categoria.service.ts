@@ -1,20 +1,37 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateCategoriaDto } from './dto/create-categoria.dto';
-import { UpdateCategoriaDto } from './dto/update-categoria.dto';
-import { Categoria } from './entities/categoria.entity';
+import { Repository, Like } from 'typeorm';
+import { Categoria } from '../entities/categoria.entity';
+
 
 @Injectable()
 export class CategoriaService {
+  delete(id: number): Promise<{ message: string; }> {
+    return this.categoriaRepository.delete(id).then(() => {
+      return { message: 'Categoria deletada com sucesso' };
+    });
+  }
+  async findAllByTitulo(titulo: string): Promise<Categoria[]> {
+    return this.categoriaRepository.find({
+      where: { titulo: Like(`%${titulo}%`) },
+    });
+  }
+
+  async findById(id: number): Promise<Categoria> {
+    const categoria = await this.categoriaRepository.findOneBy({ id });
+    if (!categoria) {
+      throw new NotFoundException('Categoria não encontrada');
+    }
+    return categoria;
+  }
   constructor(
     @InjectRepository(Categoria)
     private categoriaRepository: Repository<Categoria>,
   ) {}
 
-  async create(createCategoriaDto: CreateCategoriaDto): Promise<Categoria> {
-    const categoria = this.categoriaRepository.create(createCategoriaDto);
-    return this.categoriaRepository.save(categoria);
+  async create(categoria: Categoria): Promise<Categoria> {
+    const newCategoria = this.categoriaRepository.create(categoria);
+    return this.categoriaRepository.save(newCategoria);
   }
 
   async findAll(): Promise<Categoria[]> {
@@ -29,10 +46,12 @@ export class CategoriaService {
     return categoria;
   }
 
-  async update(id: number, updateCategoriaDto: UpdateCategoriaDto): Promise<Categoria> {
+  async update(id: number, categoriaData: Categoria): Promise<Categoria> {
+    // Remove o id do objeto categoriaData para evitar sobrescrita
+    const { id: _, ...rest } = categoriaData;
     const categoria = await this.categoriaRepository.preload({
       id,
-      ...updateCategoriaDto,
+      ...rest,
     });
     if (!categoria) {
       throw new NotFoundException('Categoria não encontrada');
