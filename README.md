@@ -1,98 +1,212 @@
+
+# 🏥 Farmácia API
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" alt="NestJS"/>
+  <img src="https://img.shields.io/badge/TypeORM-262626?style=for-the-badge&logo=typeorm&logoColor=white" alt="TypeORM"/>
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL"/>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+## 📑 Sumário
+
+- [Objetivo](#-objetivo)
+- [Ferramentas utilizadas](#-ferramentas-utilizadas)
+- [Funcionalidades](#-funcionalidades)
+- [Estrutura das Entidades](#-estrutura-das-entidades)
+- [Exemplos de Requisições](#-exemplos-de-requisições)
+- [Como rodar o projeto](#-como-rodar-o-projeto)
+- [Testes](#-testes)
+- [Contribuição](#-contribuição)
+- [Licença](#-licença)
+- [Sobre](#-sobre)
+
+## 🎯 Objetivo
+
+Elaborar um sistema de Comércio Eletrônico de uma Farmácia, utilizando NestJS, baseado no Projeto Blog Pessoal, com foco em boas práticas, organização e requisitos do setor farmacêutico.
+
+Este projeto visa atender às necessidades de uma farmácia moderna, otimizando o gerenciamento de medicamentos, estoque, vendas e atendimento ao cliente, além de garantir conformidade regulatória.
+
+O sistema foi desenvolvido em etapas, conforme especificações do desafio:
+
+- **Etapa 1:** Configuração do projeto, conexão com banco de dados e versionamento no GitHub.
+- **Etapa 2:** Implementação do CRUD completo do recurso Categoria, com todos os 6 métodos REST.
+- **Extras:** Recursos adicionais, como CRUD de Produto, relacionamento entre entidades, buscas parciais, validação e documentação, foram implementados para enriquecer a solução.
+
+
+## 🛠️ Ferramentas utilizadas
+
+API RESTful para gerenciamento de categorias e produtos de uma farmácia, desenvolvida com:
+
+- **TypeScript**
+- **NestJS**
+- **TypeORM**
+- **MySQL**
+- **Insomnia**
+
+Outras: class-validator, dotenv, Insomnia/Postman para testes, GitHub para versionamento.
+
+---
+
+## 🚀 Funcionalidades
+
+- Cadastro, listagem, atualização e remoção de **Categorias**
+- Cadastro, listagem, atualização e remoção de **Produtos**
+- Associação de produtos a categorias (1 categoria para vários produtos)
+- Busca de produtos por **nome** (parcial, case-insensitive)
+- Busca de produtos por **preço** (parcial)
+- Atualização individual de **preço** e **quantidade**
+
+---
+
+## 🗂️ Estrutura das Entidades
+
+### 📦 Categoria
+| Campo     | Tipo    | Descrição                  |
+|-----------|---------|----------------------------|
+| id        | int     | Identificador único        |
+| titulo    | string  | Nome da categoria          |
+| descricao | string  | Descrição da categoria     |
+| data      | date    | Data de criação            |
+
+### 💊 Produto
+| Campo      | Tipo     | Descrição                        |
+|------------|----------|----------------------------------|
+| id         | int      | Identificador único              |
+| nome       | string   | Nome do produto                  |
+| marca      | string   | Marca do produto                 |
+| preco      | decimal  | Preço unitário                   |
+| quantidade | int      | Quantidade em estoque            |
+| descricao  | string   | Descrição do produto             |
+| data       | date     | Data de criação                  |
+| categoria  | Categoria| Categoria associada              |
+
+---
+
+## 📋 Exemplos de Requisições
+
+### ➕ Criar Produto
+`POST /produto`
+```json
+{
+  "nome": "Enxaguante Bucal Fresh Mint",
+  "marca": "Listerine",
+  "preco": 17.90,
+  "quantidade": 40,
+  "descricao": "Enxaguante bucal antisséptico sabor menta, elimina 99% das bactérias.",
+  "categoria": { "id": 5 }
+}
+```
+
+### ✏️ Atualizar Preço do Produto
+`PATCH /produto/2/preco`
+```json
+{
+  "preco": 19.90
+}
+```
+
+### ✏️ Atualizar Quantidade do Produto
+`PATCH /produto/2/quantidade`
+```json
+{
+  "quantidade": 50
+}
+```
+
+### 🔍 Buscar Produto por Preço (parcial)
+`GET /produto/preco/17`
+
+### 🔍 Buscar Produto por Nome (parcial)
+`GET /produto?nome=Enxaguante`
+
+### 🔗 Exemplo de Resposta de Produto
+```json
+{
+  "id": 2,
+  "nome": "Enxaguante Bucal Fresh Mint",
+  "marca": "Listerine",
+  "preco": 17.90,
+  "quantidade": 40,
+  "descricao": "Enxaguante bucal antisséptico sabor menta, elimina 99% das bactérias.",
+  "data": "2025-08-12T17:36:10.417Z",
+  "categoria": {
+    "id": 5,
+    "titulo": "Higiene Bucal",
+    "descricao": "Produtos para higiene bucal",
+    "data": "2025-08-12T15:21:55.967Z"
+  }
+}
+```
+
+---
+
+
+## 🛠️ Como rodar o projeto
+
+1. **Clone o repositório:**
+  ```bash
+  git clone https://github.com/Lalisruiz/projeto_final_bloco_02.git
+  cd projeto_final_bloco_02/farmacia
+  ```
+2. **Instale as dependências:**
+  ```bash
+  npm install
+  ```
+3. **Configure o arquivo `.env` com os dados do seu banco MySQL:**
+  ```env
+  DB_HOST=localhost
+  DB_PORT=3306
+  DB_USERNAME=seu_usuario
+  DB_PASSWORD=sua_senha
+  DB_DATABASE=nome_do_banco
+  ```
+4. **(Opcional) Rode as migrations:**
+  ```bash
+  npm run typeorm migration:run
+  ```
+5. **Inicie a aplicação:**
+  ```bash
+  npm run start:dev
+  ```
+
+---
+
+
+## 🧪 Testes
+
+Utilize o **Insomnia** ou **Postman** para testar todos os endpoints da API. Exemplos de requisições estão disponíveis acima.
+
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
+
+1. Fork este repositório
+2. Crie uma branch: `git checkout -b minha-feature`
+3. Faça suas alterações e commit: `git commit -m 'feat: minha nova feature'`
+4. Push na branch: `git push origin minha-feature`
+5. Abra um Pull Request
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](../LICENSE) para mais detalhes.
+
+---
+## 👩‍💻 Sobre
+
+Projeto desenvolvido para fins didáticos, utilizando boas práticas de REST, validação e organização de código.
+
+<p align="center">
+  <b>Desenvolvido por <a href="https://github.com/Lalisruiz">Lalisruiz</a> | Projeto Final Bloco 02 - Generation Brasil</b><br>
+  <i>Entre em contato para dúvidas ou sugestões!</i>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+<p align="center">
+  <sub>Obrigado por visitar este repositório! ⭐</sub>
+</p>
