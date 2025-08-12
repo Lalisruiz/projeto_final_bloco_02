@@ -44,8 +44,9 @@ API RESTful para gerenciamento de categorias e produtos de uma farmácia, desenv
 - **TypeORM**
 - **MySQL**
 - **Insomnia**
+-  **Insomnia**
 
-Outras: class-validator, dotenv, Insomnia/Postman para testes, GitHub para versionamento.
+Outras: class-validator, dotenv, GitHub para versionamento.
 
 ---
 
