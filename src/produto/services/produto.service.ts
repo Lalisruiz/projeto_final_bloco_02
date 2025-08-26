@@ -96,7 +96,7 @@ export class ProdutoService {
     if (!produto) {
       throw new NotFoundException('Produto não encontrado');
     }
-    await this.produtoRepository.remove(produto);
+    await this.produtoRepository.delete(id);
     return { message: 'Produto deletado com sucesso' };
   }
 }

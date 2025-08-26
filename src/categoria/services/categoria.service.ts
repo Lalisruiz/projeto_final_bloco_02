@@ -6,11 +6,6 @@ import { Categoria } from '../entities/categoria.entity';
 
 @Injectable()
 export class CategoriaService {
-  delete(id: number): Promise<{ message: string; }> {
-    return this.categoriaRepository.delete(id).then(() => {
-      return { message: 'Categoria deletada com sucesso' };
-    });
-  }
   async findAllByTitulo(titulo: string): Promise<Categoria[]> {
     return this.categoriaRepository.find({
       where: { titulo: Like(`%${titulo}%`) },
@@ -59,11 +54,11 @@ export class CategoriaService {
     return this.categoriaRepository.save(categoria);
   }
 
-  async remove(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     const categoria = await this.categoriaRepository.findOneBy({ id });
     if (!categoria) {
       throw new NotFoundException('Categoria não encontrada');
     }
-    await this.categoriaRepository.remove(categoria);
+    await this.categoriaRepository.delete(categoria);
   }
 }
